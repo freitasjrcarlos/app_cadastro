@@ -3,6 +3,7 @@ import {StyleSheet, Text, TextInput, View, Image, Button, FlatList} from 'react-
 import firebase from './src/FirebaseConnection';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
+import Usuario from './src/Usuario';
 
 
 //Variáveis necessárias para RNFetchBlob
@@ -31,6 +32,8 @@ export default class Cadastro extends Component {
     this.carregarFoto = this.carregarFoto.bind(this);
     this.saveAvatar = this.saveAvatar.bind(this);
     this.saveUser = this.saveUser.bind(this);
+
+    firebase.auth().signOut();
 
 
   }
@@ -74,18 +77,8 @@ export default class Cadastro extends Component {
       },
       ()=>{
 
-        let state = this.state;
-        state.formAvatar = null,
-        state.formNome = '';
-        state.formEmail = '',
-        state.formSenha = '',
-        state.formPct = '';
-        state.userUid = 0;
-        this.setState(state);
-
-        firebase.auth().signOut();
-
-        alert("Usuário inserido com sucesso!");
+        this.saveUser();
+       
       })
     });
 
@@ -98,6 +91,19 @@ export default class Cadastro extends Component {
       firebase.database().ref('users').child(this.state.userUid).set({
         name: this.state.formNome
       });
+
+      let state = this.state;
+      state.formAvatar = null,
+      state.formNome = '';
+      state.formEmail = '',
+      state.formSenha = '',
+      state.formPct = '';
+      state.userUid = 0;
+      this.setState(state);
+
+      firebase.auth().signOut();
+
+      alert("Usuário inserido com sucesso!");
     }
     
   }
@@ -116,7 +122,6 @@ export default class Cadastro extends Component {
             this.setState(state);
 
             this.saveAvatar();
-            this.saveUser();
           }
         });
       
@@ -156,17 +161,7 @@ export default class Cadastro extends Component {
         <View style={styles.listaArea}>
           <FlatList
             data={this.state.lista}
-            renderItem={(item)=> {
-              return(
-                <View style={styles.itemArea}>
-                  <Image source={item.avatar} style={styles.itemAvatar} />
-                  <View style={styles.itemInfo}>
-                    <Text>{item.nome}</Text>
-                    <Text>{item.email}</Text>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={({item})=><Usuario data={item} />}
           />
         </View>
 
@@ -212,19 +207,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#eeeeee',
     margin: 10,
-  },
-  itemArea: {
-    height: 100,
-    flex: 1,
-    flexDirection: 'row',
-  },
-  itemAvatar: {
-    width: 80,
-    height: 80,
-    margin: 10,
-  },
-  itemInfo: {
-    flex: 1,
-    flexDirection: 'column',
   }
 });

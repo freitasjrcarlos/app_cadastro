@@ -19,6 +19,7 @@ export default class Cadastro extends Component {
       formNome: '',
       formEmail: '',
       formSenha: '',
+      formOct: '',
       userUid: 0,
       lista: [],
     };
@@ -49,6 +50,44 @@ export default class Cadastro extends Component {
 
   //Função que salva a imagem do usuário
   saveAvatar(){
+
+    let uri = this.state.formAvatar.uri.replace('file://', '');
+    let avatar = firebase.storage().ref().child('users').child(this.state.userUid+'.jpg');
+    let mime = 'image/jpeg';
+
+    RNFetchBlob.fs.readFile(uri, 'base64')
+    .then((data)=> {
+      return RNFetchBlob.polyfill.Blob.build(data, {type: mime+';BASE64'});
+    })
+    .then((blob)=> {
+      avatar.put(blob, {contentType:mime})
+      .on('state_changed', (snapshot)=>{
+
+        let pct = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        let state = this.state;
+        state.formPct = pct+'%';
+        this.setState(state);
+        
+      }, 
+      (error)=>{
+        alert(error.code);
+      },
+      ()=>{
+
+        let state = this.state;
+        state.formAvatar = null,
+        state.formNome = '';
+        state.formEmail = '',
+        state.formSenha = '',
+        state.formPct = '';
+        state.userUid = 0;
+        this.setState(state);
+
+        firebase.auth().signOut();
+
+        alert("Usuário inserido com sucesso!");
+      })
+    });
 
   }
 
@@ -103,6 +142,7 @@ export default class Cadastro extends Component {
             <View style={styles.formInfo}>
               <Image source={this.state.formAvatar} style={styles.formAvatar} />
               <Button title="Carregar" onPress={this.carregarFoto} />
+              <Text>{this.state.formPct}</Text>
             </View>
             <View style={styles.formInfo}>
               <TextInput style={styles.input} placeholder="Nome" value={this.state.formNome} onChangeText={(formNome)=>this.setState({formNome})} />

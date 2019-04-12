@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Image} from 'react-native';
+import {StyleSheet, Text, TextInput, View, Image, Button} from 'react-native';
 import firebase from 'firebase';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -35,6 +35,13 @@ export default class App extends Component {
 
 
     //Funções
+    this.cadastrar = this.cadastrar.bind(this);
+
+
+  }
+
+  //Função cadastrar
+  cadastrar() {
 
   }
 
@@ -59,8 +66,10 @@ export default class App extends Component {
             </View>
           </View>
 
-        </View>
-      </View>
+          <Button title="Cadastrar" onPress={this.cadastrar} />
+
+        </View> 
+      </View> 
     );
   }
 }
@@ -73,7 +82,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   cadastroArea: {
-    height: 300,
+    height: 200,
     backgroundColor: '#eeeeee',
     margin: 10,
     padding: 10,

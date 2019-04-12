@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, TextInput, View, Image, Button, FlatList} from 'react-native';
-import firebase from 'firebase';
+import firebase from './src/FirebaseConnection';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -10,7 +10,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = RNFetchBlob.polyfill.Blob;
 
 
-export default class App extends Component {
+export default class Cadastro extends Component {
 
   constructor(props){
     super(props);
@@ -21,29 +21,30 @@ export default class App extends Component {
       formSenha: '',
       lista: [],
     };
-
-    /* Conexão com Firebase */
-    let config = {
-			apiKey: "AIzaSyCigAgH9ha1k3aF8zOQhkTWn5zXp0lmJEc",
-			authDomain: "projeto-teste-20eff.firebaseapp.com",
-			databaseURL: "https://projeto-teste-20eff.firebaseio.com",
-			projectId: "projeto-teste-20eff",
-			storageBucket: "projeto-teste-20eff.appspot.com",
-			messagingSenderId: "951771389914"
-		};
-    firebase.initializeApp(config);
-    /* Fim Conexão */
+   
 
 
     //Funções
     this.cadastrar = this.cadastrar.bind(this);
+    this.carregarFoto = this.carregarFoto.bind(this);
 
+
+  }
+
+  //Função carregarFoto
+  carregarFoto() {
 
   }
 
   //Função cadastrar
   cadastrar() {
+    if(this.state.formAvatar != null &&
+      this.state.formNome != null &&
+      this.state.formEmail != null &&
+      this.state.formSenha != null){
 
+
+    }
   }
 
 
@@ -55,7 +56,10 @@ export default class App extends Component {
         <View style={styles.cadastroArea}>
           <Text> Cadastre um novo usuário </Text>
           <View style={styles.form}>
-            <Image source={this.state.formAvatar} style={styles.formAvatar} />
+            <View style={styles.formInfo}>
+              <Image source={this.state.formAvatar} style={styles.formAvatar} />
+              <Button title="Carregar" onPress={this.carregarFoto} />
+            </View>
             <View style={styles.formInfo}>
               <TextInput style={styles.input} placeholder="Nome" value={this.state.formNome} onChangeText={(formNome)=>this.setState({formNome})} />
               <TextInput style={styles.input} placeholder="Email" value={this.state.formEmail} onChangeText={(formEmail)=>this.setState({formEmail})} />

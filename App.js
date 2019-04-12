@@ -33,7 +33,15 @@ export default class Cadastro extends Component {
 
   //Função carregarFoto
   carregarFoto() {
+    ImagePicker.showImagePicker({}, (r)=> {
+      if(r.uri){
+        
+        let state = this.state;
+        state.formAvatar = {uri:r.uri};
+        this.setState(state);
 
+      }
+    });
   }
 
   //Função cadastrar

@@ -19,6 +19,7 @@ export default class Cadastro extends Component {
       formNome: '',
       formEmail: '',
       formSenha: '',
+      userUid: 0,
       lista: [],
     };
    
@@ -27,6 +28,8 @@ export default class Cadastro extends Component {
     //Funções
     this.cadastrar = this.cadastrar.bind(this);
     this.carregarFoto = this.carregarFoto.bind(this);
+    this.saveAvatar = this.saveAvatar.bind(this);
+    this.saveUser = this.saveUser.bind(this);
 
 
   }
@@ -44,6 +47,22 @@ export default class Cadastro extends Component {
     });
   }
 
+  //Função que salva a imagem do usuário
+  saveAvatar(){
+
+  }
+
+  //Função que salva os dados
+  saveUser(){
+
+    if(this.state.userUid != 0){
+      firebase.database().ref('users').child(this.state.userUid).set({
+        name: this.state.formNome
+      });
+    }
+    
+  }
+
   //Função cadastrar
   cadastrar() {
     if(this.state.formAvatar != null &&
@@ -51,6 +70,23 @@ export default class Cadastro extends Component {
       this.state.formEmail != null &&
       this.state.formSenha != null){
 
+        firebase.auth().onAuthStateChanged((user)=>{
+          if(user){
+            let state = this.state;
+            state.userUid = user.uid;
+            this.setState(state);
+
+            this.saveAvatar();
+            this.saveUser();
+          }
+        });
+      
+        firebase.auth().createUserWithEmailAndPassword(
+          this.state.formEmail, 
+          this.state.formSenha)
+          .catch((error)=> {
+            alert(error.code);
+          });
 
     }
   }

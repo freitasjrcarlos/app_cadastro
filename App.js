@@ -33,7 +33,23 @@ export default class Cadastro extends Component {
     this.saveAvatar = this.saveAvatar.bind(this);
     this.saveUser = this.saveUser.bind(this);
 
+    //Logout
     firebase.auth().signOut();
+
+    firebase.database().ref('users').on('value', (snapshot)=> {
+
+      let state = this.state;
+      state.lista = [];
+
+      snapshot.forEach((child)=> {
+        state.lista.push({
+          key: child.key,
+          name: child.val().name,
+          email: child.val().email
+        });
+      });
+      this.setState(state);
+    });
 
 
   }
@@ -89,7 +105,8 @@ export default class Cadastro extends Component {
 
     if(this.state.userUid != 0){
       firebase.database().ref('users').child(this.state.userUid).set({
-        name: this.state.formNome
+        name: this.state.formNome,
+        email: this.state.formEmail
       });
 
       let state = this.state;
@@ -179,7 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   cadastroArea: {
-    height: 240,
+    height: 260,
     backgroundColor: '#eeeeee',
     margin: 10,
     padding: 10,

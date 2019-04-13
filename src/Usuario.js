@@ -9,6 +9,7 @@ export default class Usuario extends Component {
     this.state = {
       key: this.props.data.key,
       name: this.props.data.name,
+      email:this.props.data.email,
       avatar: null,
     };
 
@@ -30,7 +31,7 @@ export default class Usuario extends Component {
       <View style={styles.itemArea}>
       <Image source={this.state.avatar} style={styles.itemAvatar} />
       <View style={styles.itemInfo}>
-        <Text>{this.state.nome}</Text>
+        <Text>{this.state.name}</Text>
         <Text>{this.state.email}</Text>
       </View>
      </View>
